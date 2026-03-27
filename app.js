@@ -1,5 +1,5 @@
 // GitHub 仓库展示页面 - 动态加载 Markdown
-// 自动解析 GitHub仓库整理_带更新时间.md 并渲染
+// 支持本地文件和远程文件
 
 const MARKDOWN_URL = 'GitHub仓库整理_带更新时间.md';
 
@@ -239,55 +239,105 @@ function searchRepos(keyword) {
     document.getElementById('resultCount').textContent = `显示 ${visibleCount} 个仓库`;
 }
 
-// 加载并渲染
-async function loadRepos() {
-    const loadingEl = document.getElementById('loading');
-    const reposContainer = document.getElementById('reposContainer');
+// 渲染仓库列表
+function renderRepos(repos) {
+    window.allRepos = repos;
     
-    try {
-        loadingEl.style.display = 'block';
-        reposContainer.innerHTML = '';
-        
-        // 添加随机参数防止缓存
-        const response = await fetch(`${MARKDOWN_URL}?t=${Date.now()}`);
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const content = await response.text();
-        const repos = parseMarkdown(content);
-        window.allRepos = repos;
-        
-        // 统计分类
-        const categoryCount = {};
-        repos.forEach(repo => {
-            categoryCount[repo.category] = (categoryCount[repo.category] || 0) + 1;
-        });
-        
-        const categories = Object.entries(categoryCount)
-            .map(([key, count]) => ({ key, count }))
-            .sort((a, b) => b.count - a.count);
-        
-        // 渲染分类筛选器
-        renderCategoryFilters(categories);
-        
-        // 渲染仓库卡片
-        reposContainer.innerHTML = repos.map(renderRepoCard).join('');
-        
-        // 更新统计
-        document.getElementById('resultCount').textContent = `共 ${repos.length} 个仓库`;
-        document.getElementById('updateTime').textContent = new Date().toLocaleString('zh-CN');
-        
-        loadingEl.style.display = 'none';
-        
-    } catch (error) {
+    // 统计分类
+    const categoryCount = {};
+    repos.forEach(repo => {
+        categoryCount[repo.category] = (categoryCount[repo.category] || 0) + 1;
+    });
+    
+    const categories = Object.entries(categoryCount)
+        .map(([key, count]) => ({ key, count }))
+        .sort((a, b) => b.count - a.count);
+    
+    // 渲染分类筛选器
+    renderCategoryFilters(categories);
+    
+    // 渲染仓库卡片
+    const reposContainer = document.getElementById('reposContainer');
+    reposContainer.innerHTML = repos.map(renderRepoCard).join('');
+    
+    // 更新统计
+    document.getElementById('resultCount').textContent = `共 ${repos.length} 个仓库`;
+    document.getElementById('repoCount').textContent = `📦 ${repos.length} 个仓库`;
+    document.getElementById('updateTime').textContent = new Date().toLocaleString('zh-CN');
+}
+
+// 显示加载状态
+function showLoading() {
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('reposContainer').innerHTML = '';
+}
+
+// 显示错误状态
+function showError(message, isLocalFile = false) {
+    const loadingEl = document.getElementById('loading');
+    
+    if (isLocalFile) {
         loadingEl.innerHTML = `
             <div class="error">
-                <p>❌ 加载失败: ${error.message}</p>
-                <p>请确保 Markdown 文件已推送到仓库</p>
+                <p>⚠️ 本地文件访问受限</p>
+                <p>由于浏览器安全限制，无法直接读取本地文件</p>
+                <p style="margin: 16px 0; font-size: 0.9rem;">
+                    请使用以下方式查看：<br>
+                    1. <strong>部署到 GitHub Pages</strong> 后在线访问<br>
+                    2. 使用本地服务器：<code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">python3 -m http.server 8000</code>
+                </p>
                 <button onclick="loadRepos()" class="retry-btn">重试</button>
             </div>
         `;
+    } else {
+        loadingEl.innerHTML = `
+            <div class="error">
+                <p>❌ 加载失败: ${message}</p>
+                <button onclick="loadRepos()" class="retry-btn">重试</button>
+            </div>
+        `;
+    }
+}
+
+// 加载并渲染
+async function loadRepos() {
+    showLoading();
+    
+    try {
+        // 检测是否为本地文件协议
+        const isLocalFile = window.location.protocol === 'file:';
+        
+        if (isLocalFile) {
+            // 本地文件模式：尝试使用 fetch，如果失败则提示用户
+            try {
+                const response = await fetch(`${MARKDOWN_URL}?t=${Date.now()}`);
+                if (!response.ok) throw new Error('Fetch failed');
+                
+                const content = await response.text();
+                const repos = parseMarkdown(content);
+                
+                document.getElementById('loading').style.display = 'none';
+                renderRepos(repos);
+            } catch (fetchError) {
+                // fetch 失败，显示本地文件提示
+                showError('', true);
+            }
+        } else {
+            // 在线模式：正常 fetch
+            const response = await fetch(`${MARKDOWN_URL}?t=${Date.now()}`);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const content = await response.text();
+            const repos = parseMarkdown(content);
+            
+            document.getElementById('loading').style.display = 'none';
+            renderRepos(repos);
+        }
+        
+    } catch (error) {
+        showError(error.message);
         console.error('加载失败:', error);
     }
 }
