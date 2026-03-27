@@ -24,7 +24,9 @@ const categoryMap = {
 // 解析 Markdown 内容
 function parseMarkdown(content) {
     const repos = [];
-    const lines = content.split('\n');
+    // 统一换行符，处理 Windows \r\n 和 Mac \r
+    const normalizedContent = content.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    const lines = normalizedContent.split('\n');
     let currentCategory = '';
     let currentCategoryName = '';
     
