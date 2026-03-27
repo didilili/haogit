@@ -12,10 +12,10 @@
     <header class="header">
         <div class="container">
             <h1>🚀 GitHub 优质仓库整理</h1>
-            <p class="subtitle">精心整理的 106 个开源项目，涵盖 Python、Java、AI、前端等多个领域</p>
+            <p class="subtitle">精心整理的开源项目，涵盖 Python、Java、AI、前端等多个领域</p>
             <div class="stats">
-                <span class="stat-item">📦 106 个仓库</span>
-                <span class="stat-item">📅 2026年3月更新</span>
+                <span class="stat-item" id="repoCount">📦 加载中...</span>
+                <span class="stat-item" id="updateTime">📅 实时同步</span>
                 <span class="stat-item">🔥 持续维护</span>
             </div>
         </div>
@@ -26,34 +26,36 @@
         <section class="filter-section">
             <div class="search-box">
                 <input type="text" id="searchInput" placeholder="🔍 搜索仓库名称、描述或关键词...">
+                <button id="refreshBtn" class="refresh-btn" title="刷新数据">
+                    <svg viewBox="0 0 24 24" width="18" height="18">
+                        <path fill="currentColor" d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                    </svg>
+                </button>
             </div>
             <div class="category-filters" id="categoryFilters">
-                <button class="filter-btn active" data-category="all">全部</button>
-                <button class="filter-btn" data-category="python">🐍 Python</button>
-                <button class="filter-btn" data-category="java">☕ Java</button>
-                <button class="filter-btn" data-category="ai">🤖 AI/LLM</button>
-                <button class="filter-btn" data-category="frontend">🌐 前端</button>
-                <button class="filter-btn" data-category="backend">🖥️ 后端</button>
-                <button class="filter-btn" data-category="algorithm">📊 算法</button>
-                <button class="filter-btn" data-category="weapp">📱 小程序</button>
-                <button class="filter-btn" data-category="macos">🍎 macOS</button>
-                <button class="filter-btn" data-category="other">🔧 其他</button>
+                <!-- 分类按钮将通过 JavaScript 动态生成 -->
             </div>
+            <div class="result-info" id="resultCount">加载中...</div>
         </section>
 
+        <!-- 加载状态 -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>正在加载仓库数据...</p>
+        </div>
+
         <!-- 仓库列表 -->
-        <section class="repos-section" id="reposSection">
+        <section class="repos-section" id="reposContainer">
             <!-- 仓库卡片将通过 JavaScript 动态生成 -->
         </section>
     </main>
 
     <footer class="footer">
         <div class="container">
-            <p>Made with ❤️ | 数据来源 GitHub API | 更新时间：2026年03月20日</p>
+            <p>Made with ❤️ | 数据实时同步自 <a href="GitHub仓库整理_带更新时间.md" target="_blank">GitHub仓库整理_带更新时间.md</a></p>
         </div>
     </footer>
 
-    <script src="data.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
