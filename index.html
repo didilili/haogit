@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub 优质仓库整理</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>🚀 GitHub 优质仓库整理</h1>
+            <p class="subtitle">精心整理的 106 个开源项目，涵盖 Python、Java、AI、前端等多个领域</p>
+            <div class="stats">
+                <span class="stat-item">📦 106 个仓库</span>
+                <span class="stat-item">📅 2026年3月更新</span>
+                <span class="stat-item">🔥 持续维护</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- 搜索和筛选 -->
+        <section class="filter-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 搜索仓库名称、描述或关键词...">
+            </div>
+            <div class="category-filters" id="categoryFilters">
+                <button class="filter-btn active" data-category="all">全部</button>
+                <button class="filter-btn" data-category="python">🐍 Python</button>
+                <button class="filter-btn" data-category="java">☕ Java</button>
+                <button class="filter-btn" data-category="ai">🤖 AI/LLM</button>
+                <button class="filter-btn" data-category="frontend">🌐 前端</button>
+                <button class="filter-btn" data-category="backend">🖥️ 后端</button>
+                <button class="filter-btn" data-category="algorithm">📊 算法</button>
+                <button class="filter-btn" data-category="weapp">📱 小程序</button>
+                <button class="filter-btn" data-category="macos">🍎 macOS</button>
+                <button class="filter-btn" data-category="other">🔧 其他</button>
+            </div>
+        </section>
+
+        <!-- 仓库列表 -->
+        <section class="repos-section" id="reposSection">
+            <!-- 仓库卡片将通过 JavaScript 动态生成 -->
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Made with ❤️ | 数据来源 GitHub API | 更新时间：2026年03月20日</p>
+        </div>
+    </footer>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
